@@ -1,4 +1,5 @@
 from .rand import roll
+from .gear import Weapon, Armor
 
 
 class Gladiator:
@@ -10,6 +11,8 @@ class Gladiator:
         self.defense = roll(4, 6, top=3)
         self.agility = roll(4, 6, top=3)
         self.intel = roll(4, 6, top=3)
+        self.weapon = Weapon.fist()
+        self.armor = Armor.skin()
 
     def show(self, win):
         for i, msg in enumerate([
@@ -19,5 +22,7 @@ class Gladiator:
             f'Def:      {self.defense}',
             f'Agi:      {self.agility}',
             f'Int:      {self.intel}',
+            f'Wpn:      {self.weapon!r}',
+            f'Arm:      {self.armor!r}',
         ]):
             win.write(msg, pos=(0, i))
