@@ -1,3 +1,6 @@
+from .gladiator import Gladiator
+
+
 class Resources:
 
     def __init__(self):
@@ -20,8 +23,13 @@ class Resources:
 class GameState:
 
     def __init__(self):
-        self.gladiators = []
+        self.gladiators = [Gladiator()]
         self.res = Resources()
 
     def show_resources(self, win):
         self.res.show(win)
+
+    def show_gladiators(self, win):
+        for glad in self.gladiators:
+            glad.show(win)
+            win.getch()

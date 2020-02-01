@@ -17,5 +17,6 @@ def start():
             state = GameState()
             state.show_resources(scr)
             scr.getch()
+            state.show_gladiators(scr)
         else:
             return
