@@ -15,8 +15,10 @@ def start():
         selection = screen.run()
         if selection is TitleMenu.new:
             state = GameState()
+            scr.clear()
             state.show_resources(scr)
             scr.getch()
+            scr.clear()
             state.show_gladiators(scr)
         else:
             return
