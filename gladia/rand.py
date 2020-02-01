@@ -18,10 +18,13 @@ def _name_randomizer():
     name_idx = 0
 
     def random_name():
+        global NAMES
         nonlocal name_idx
         name = NAMES[name_idx].title()
         name_idx += 1
-        name_idx %= len(NAMES)
+        if name_idx >= len(NAMES):
+            shuffle(NAMES)
+            name_idx = 0
         return name
 
     return random_name
