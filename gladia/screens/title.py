@@ -1,6 +1,6 @@
 import logging
 
-from . import Menu
+from . import Menu, Screen
 
 LOG = logging.getLogger(__name__)
 
@@ -11,16 +11,16 @@ class TitleMenu(Menu):
     quit = '[q]uit'
 
 
-class TitleScreen:
+class TitleScreen(Screen):
 
-    def __init__(self, scr):
-        size = scr.max_size()
-        self.win = scr.new_win(orig=(0, 0), size=size)
+    def run(self):
         item = TitleMenu.show(self.win)
         LOG.debug(f'selected {item!r}')
         if item is TitleMenu.new:
             LOG.info('new game')
+            return item
         elif item is TitleMenu.load:
             raise NotImplementedError('cant load yet')
+            return item
         else:
-            return None
+            return item

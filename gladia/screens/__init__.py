@@ -76,3 +76,11 @@ def get_input(scr, msg, pos=None, color=None, validator=None, echo=True):
                 return val
         else:
             return val
+
+
+class Screen:
+
+    def __init__(self, scr):
+        self.scr = scr
+        self.size = self.scr.max_size()
+        self.win = self.scr.new_win(orig=(0, 0), size=self.size)
