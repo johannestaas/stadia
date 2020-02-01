@@ -47,11 +47,11 @@ setup(
         ],
     },
     # If you get errors running setup.py install:
-    # zip_safe=False,
+    zip_safe=False,
     #
     # For including non-python files:
-    # package_data={
-    #     'gladia': ['templates/*.html'],
-    # },
-    # include_package_data=True,
+    package_data={
+        'gladia': ['data/*.txt'],
+    },
+    include_package_data=True,
 )

@@ -1,11 +1,11 @@
-from .rand import roll
+from .rand import roll, random_name
 from .gear import Weapon, Armor
 
 
 class Gladiator:
 
     def __init__(self):
-        self.name = 'Rollo'
+        self.name = random_name()
         self.hp = 100
         self.attack = roll(4, 6, top=3)
         self.defense = roll(4, 6, top=3)
