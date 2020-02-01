@@ -1,0 +1,2 @@
+class GladiaError(ValueError):
+    pass

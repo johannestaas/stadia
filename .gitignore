@@ -1,0 +1,10 @@
+syntax: glob
+*.pyc
+*.log
+build/*
+gladia.egg-info/*
+dist/*
+gladia.egg*
+.tox/*
+.cache/*
+.ropeproject/*
