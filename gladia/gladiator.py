@@ -69,33 +69,29 @@ class Gladiator:
 
     def check_critical(self, enemy):
         diff = self._atk - enemy._def
-        LOG.debug(f'checking critical of {self.name} vs {enemy.name}')
         return attempt_with_bonus(CRITICAL_CHANCE, bonus=diff)
 
     def attack(self, enemy):
-        LOG.debug(f'{self.name} attacking {enemy.name}')
+        LOG.info(f'{self.name} attacking {enemy.name}')
         if not self.hit_or_miss(enemy):
-            LOG.debug(f'{self.name} missed!')
+            LOG.info(f'{self.name} missed!')
             return AttackResult(hit=False, crit=False, dmg=0)
-        LOG.debug(f'{self.name} hit!')
         dmg_result = self.weapon.damage()
-        LOG.debug(f'result: {dmg_result!r}')
         dmg_result.subtract_armor(enemy.armor)
-        LOG.debug(f'after subtracting enemy armor: {dmg_result!r}')
         dmg_type, dmg = dmg_result.max()
         crit = self.check_critical(enemy)
         if crit:
             dmg = math.ceil(dmg * CRITICAL_COEF)
             LOG.debug(f'attack is critical!')
         enemy.take_damage(dmg)
-        LOG.debug(f'{self.name} did {dmg_type} damage for {dmg}')
+        LOG.info(f'{self.name} did {dmg_type} damage for {dmg}')
         return AttackResult(hit=True, crit=crit, dmg=dmg)
 
     def take_damage(self, amt):
         self.hp -= amt
         LOG.debug(f'{self.name} HP at {self.hp}/{self.max_hp}')
         if self.is_dead():
-            LOG.debug(f'{self.name} was defeated!')
+            LOG.info(f'{self.name} was defeated!')
         return self.hp > 0
 
     def is_dead(self):

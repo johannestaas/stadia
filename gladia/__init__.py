@@ -14,8 +14,19 @@ __copyright__ = 'Copyright 2020 Johan Nestaas'
 
 from .game import start
 from .log import setup_logging
+from .debug import debug_fight
 
 
 def main():
+    import argparse
     setup_logging()
-    start()
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '--debug', '-d', default=None,
+        help='run tests',
+    )
+    args = parser.parse_args()
+    if args.debug is None:
+        start()
+    elif args.debug == 'fight':
+        debug_fight()
