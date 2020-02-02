@@ -185,15 +185,16 @@ class Stadium:
         for glad in self.gen_shuffled_gladiators():
             action, target = glad.act(self, self.get_enemy_team(glad))
             if action is Action.nop:
-                LOG.info(f'{glad} is not doing anything')
+                LOG.info(f'{glad.name} is not doing anything')
             elif action is Action.move:
-                LOG.info(f'{glad} is moving to {target}')
+                LOG.info(f'{glad.name} is moving to {target}')
                 self[target] = glad
             elif action is Action.attack:
-                LOG.info(f'{glad} is attacking {target}')
+                LOG.info(f'{glad.name} is attacking {target.name}')
                 glad.attack(target)
             dead = self.dead_teams()
             if dead:
                 LOG.info(f'battle is over! dead teams: {dead!r}')
-                return True
-        return False
+                return False
+            self.logshow()
+        return True
