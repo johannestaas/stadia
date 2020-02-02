@@ -1,4 +1,31 @@
+from random import randint
 from dataclasses import dataclass
+
+
+@dataclass
+class DamageResult:
+    pierce: int
+    blunt: int
+    slash: int
+
+    def subtract_armor(self, armor):
+        if self.pierce > 0:
+            self.pierce = max(1, self.pierce - armor.pierce)
+        if self.blunt > 0:
+            self.blunt = max(1, self.blunt - armor.blunt)
+        if self.slash > 0:
+            self.slash = max(1, self.slash - armor.slash)
+
+    def max(self):
+        mx = max(self.pierce, self.blunt, self.slash)
+        if mx == 0:
+            return None, 0
+        if self.slash == mx:
+            return 'slash', mx
+        elif self.pierce == mx:
+            return 'pierce', mx
+        elif self.blunt == mx:
+            return 'blunt', mx
 
 
 @dataclass
@@ -24,6 +51,13 @@ class Weapon:
             f'Spd:{self.speed:0.3}, '
             f'Acc:{self.acc:0.3}'
             f')'
+        )
+
+    def damage(self):
+        return DamageResult(
+            pierce=randint(*self.pierce),
+            blunt=randint(*self.blunt),
+            slash=randint(*self.slash),
         )
 
     @classmethod

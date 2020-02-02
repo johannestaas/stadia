@@ -1,5 +1,6 @@
 import os
-from random import shuffle, randint
+import math
+from random import shuffle, randint, uniform
 
 DIRNAME = os.path.dirname(__file__)
 with open(os.path.join(DIRNAME, 'data', 'names.txt')) as f:
@@ -28,6 +29,26 @@ def _name_randomizer():
         return name
 
     return random_name
+
+
+def rand_prob(mn=0, mx=1):
+    return uniform(mn, mx)
+
+
+def attempt_with_bonus(base, bonus=0):
+    prob = rand_prob()
+    if bonus == 0:
+        # If no bonus, just check the roll against the base.
+        # If accuracy (base) is 0.9, then we're checking a 90% rate of hit.
+        return prob <= base
+    # Use a logarithmic curve to determine the bonus.
+    # The log value affects whether the difficulty is magnified or not.
+    val = math.log(abs(bonus) + math.e)
+    if bonus > 0:
+        difficulty = (1.0 - base) / val
+    else:
+        difficulty = (1.0 - base) * val
+    return prob <= (1.0 - difficulty)
 
 
 random_name = _name_randomizer()
