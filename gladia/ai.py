@@ -59,7 +59,13 @@ class AI:
             dist = calc_distance(self.gladiator.pos, self.target.pos)
             if dist > self.gladiator.weapon.range:
                 # Have to move closer.
-                pass
+                path = AI.a_star(self.gladiator.pos, stadium, self.target.pos)
+                if path is None:
+                    LOG.warning(
+                        f'{self.gladiator!r} has no path to {self.target!r}'
+                    )
+                    return Action.nop, None
+                return Action.move, path[0]
             else:
                 # We can attack.
                 return Action.attack, self.target
