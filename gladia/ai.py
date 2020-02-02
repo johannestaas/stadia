@@ -1,4 +1,7 @@
+import logging
 from enum import Enum
+
+LOG = logging.getLogger(__name__)
 
 
 def calc_distance(pos1, pos2):
@@ -80,7 +83,7 @@ class AI:
                 enemy
             ))
         # Sort by distance, then pick the second element, the enemy.
-        closest_enemy = sorted(dists)[0][1]
+        closest_enemy = sorted(dists, key=lambda x: x[0])[0][1]
         return closest_enemy
 
     @staticmethod

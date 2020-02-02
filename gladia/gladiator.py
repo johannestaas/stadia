@@ -114,3 +114,7 @@ class Gladiator:
 
     def char(self):
         return 'G'
+
+    def act(self, stadium, enemy_team):
+        action, goal = self.ai.act(stadium, enemy_team)
+        return action, goal

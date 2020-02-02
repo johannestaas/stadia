@@ -14,7 +14,7 @@ __copyright__ = 'Copyright 2020 Johan Nestaas'
 
 from .game import start
 from .log import setup_logging
-from .debug import debug_fight, debug_a_star
+from .debug import debug_fight, debug_a_star, debug_stadium_fight
 
 
 def main():
@@ -23,7 +23,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         '--debug', '-d', default=None,
-        choices=('fight', 'a_star'),
+        choices=('fight', 'a_star', 'stadium_fight'),
         help='run tests',
     )
     args = parser.parse_args()
@@ -31,5 +31,7 @@ def main():
         start()
     elif args.debug == 'fight':
         debug_fight()
+    elif args.debug == 'stadium_fight':
+        debug_stadium_fight()
     elif args.debug == 'a_star':
         debug_a_star()

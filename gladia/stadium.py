@@ -2,7 +2,8 @@ import logging
 from dataclasses import dataclass
 from itertools import product
 
-from .rand import rand_pos
+from .rand import rand_pos, shuffle
+from .ai import Action
 
 LOG = logging.getLogger(__name__)
 
@@ -35,6 +36,12 @@ class Team:
         self.name = name
         self.gladiators = gladiators
 
+    def is_alive(self):
+        for glad in self.gladiators:
+            if glad.hp > 0:
+                return True
+        return False
+
 
 class Stadium:
 
@@ -65,8 +72,8 @@ class Stadium:
 
     def init_positions(self):
         team1, team2 = self.teams
-        start_y_1 = (self.size[1] // 2) - (len(team1) // 2)
-        start_y_2 = (self.size[1] // 2) - (len(team2) // 2)
+        start_y_1 = (self.size[1] // 2) - (len(team1.gladiators) // 2)
+        start_y_2 = (self.size[1] // 2) - (len(team2.gladiators) // 2)
         for i, glad in enumerate(team1.gladiators):
             pos = (0, start_y_1 + i)
             self[pos] = glad
@@ -151,3 +158,42 @@ class Stadium:
             pos = rand_pos(self)
             if self[pos] is None:
                 return pos
+
+    def gen_shuffled_gladiators(self):
+        team_indices = list(range(len(self.teams)))
+        shuffle(team_indices)
+        for i_t in team_indices:
+            team = self.teams[i_t]
+            glad_indices = list(range(len(team.gladiators)))
+            shuffle(glad_indices)
+            for i_g in glad_indices:
+                yield team.gladiators[i_g]
+
+    def get_enemy_team(self, gladiator):
+        if gladiator in self.teams[0].gladiators:
+            return self.teams[1]
+        return self.teams[0]
+
+    def dead_teams(self):
+        dead = []
+        for team in self.teams:
+            if not team.is_alive():
+                dead.append(team)
+        return dead
+
+    def act(self):
+        for glad in self.gen_shuffled_gladiators():
+            action, target = glad.act(self, self.get_enemy_team(glad))
+            if action is Action.nop:
+                LOG.info(f'{glad} is not doing anything')
+            elif action is Action.move:
+                LOG.info(f'{glad} is moving to {target}')
+                self[target] = glad
+            elif action is Action.attack:
+                LOG.info(f'{glad} is attacking {target}')
+                glad.attack(target)
+            dead = self.dead_teams()
+            if dead:
+                LOG.info(f'battle is over! dead teams: {dead!r}')
+                return True
+        return False

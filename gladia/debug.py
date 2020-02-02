@@ -1,7 +1,7 @@
 import logging
 
 from .gladiator import Gladiator
-from .stadium import Stadium, Wall
+from .stadium import Stadium, Wall, Team
 from .ai import AI
 from .rand import rand_pos
 
@@ -23,6 +23,16 @@ def debug_fight():
         if glad1.is_dead():
             LOG.debug(f'{glad2!r} defeated {glad1!r}')
             break
+
+
+def debug_stadium_fight():
+    team1 = Team('ALPHA TEAM', [Gladiator(), Gladiator()])
+    team2 = Team('BETA TEAM', [Gladiator(), Gladiator()])
+    stadium = Stadium(teams=[team1, team2])
+    i = 0
+    while stadium.act():
+        i += 1
+        LOG.info(f'*** ROUND {i} ***')
 
 
 def debug_a_star():
