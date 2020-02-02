@@ -2,6 +2,7 @@ import math
 import logging
 from dataclasses import dataclass
 
+from .ai import AI
 from .rand import roll, random_name, attempt_with_bonus
 from .gear import Weapon, Armor
 
@@ -36,8 +37,10 @@ class Gladiator:
     _def: int
     _agi: int
     _int: int
+    pos: (int, int)
     weapon: Weapon
     armor: Armor
+    ai: AI
 
     def __init__(self):
         self.name = random_name()
@@ -47,8 +50,10 @@ class Gladiator:
         self._def = roll(4, 6, top=3)
         self._agi = roll(4, 6, top=3)
         self._int = roll(4, 6, top=3)
+        self.pos = (None, None)
         self.weapon = Weapon.fist()
         self.armor = Armor.skin()
+        self.ai = AI()
 
     def show(self, win):
         for i, msg in enumerate([
@@ -62,6 +67,9 @@ class Gladiator:
             f'Arm:      {self.armor!r}',
         ]):
             win.write(msg, pos=(0, i))
+        if self.pos[0] is not None:
+            # If they're in the stadium, write their position.
+            win.write(f'Pos:      {self.pos!r}', pos=(0, i + 1))
 
     def hit_or_miss(self, enemy):
         diff = self._agi - enemy._agi
@@ -96,3 +104,7 @@ class Gladiator:
 
     def is_dead(self):
         return self.hp <= 0
+
+    def cleanup(self):
+        self.pos = (None, None)
+        self.hp = self.max_hp
