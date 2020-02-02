@@ -3,7 +3,7 @@ import logging
 from dataclasses import dataclass
 
 from .ai import AI
-from .rand import roll, random_name, attempt_with_bonus
+from .rand import roll, rand_name, attempt_with_bonus
 from .gear import Weapon, Armor
 
 CRITICAL_CHANCE = 0.05
@@ -43,7 +43,7 @@ class Gladiator:
     ai: AI
 
     def __init__(self):
-        self.name = random_name()
+        self.name = rand_name()
         self.hp = 100
         self.max_hp = 100
         self._atk = roll(4, 6, top=3)
@@ -54,6 +54,9 @@ class Gladiator:
         self.weapon = Weapon.fist()
         self.armor = Armor.skin()
         self.ai = AI(self)
+
+    def blocks(self):
+        return True
 
     def show(self, win):
         for i, msg in enumerate([
@@ -108,3 +111,6 @@ class Gladiator:
     def cleanup(self):
         self.pos = (None, None)
         self.hp = self.max_hp
+
+    def char(self):
+        return 'G'

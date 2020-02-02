@@ -1,7 +1,32 @@
 import logging
+from dataclasses import dataclass
 from itertools import product
 
+from .rand import rand_pos
+
 LOG = logging.getLogger(__name__)
+
+
+@dataclass
+class Wall:
+    pos: (int, int)
+
+    def char(self):
+        return '#'
+
+    def blocks(self):
+        return True
+
+
+@dataclass
+class Marker:
+    pos: (int, int)
+
+    def char(self):
+        return 'O'
+
+    def blocks(self):
+        return False
 
 
 class Team:
@@ -18,7 +43,8 @@ class Stadium:
         self.teams = teams
         self._map = None
         self.init_map()
-        self.init_positions()
+        if teams is not None:
+            self.init_positions()
 
     def __getitem__(self, x_y):
         x, y = x_y
@@ -51,10 +77,11 @@ class Stadium:
     def cleanup(self):
         # Clean out map by reinitializing.
         self.init_map()
-        for team in self.teams:
-            for glad in team.gladiators:
-                # Heals HP, and removes pos.
-                glad.cleanup()
+        if self.teams is not None:
+            for team in self.teams:
+                for glad in team.gladiators:
+                    # Heals HP, and removes pos.
+                    glad.cleanup()
 
     def neighbors(self, pos):
         '''
@@ -85,3 +112,42 @@ class Stadium:
             if self[n] is not None:
                 neighbors.remove(n)
         return neighbors
+
+    def show(self, win):
+        raise NotImplementedError('cant show you SHIT')
+
+    def gen_coords(self):
+        for y in range(self.size[1]):
+            for x in range(self.size[0]):
+                yield x, y
+
+    def logshow(self):
+        last_y = 0
+        s = 'STADIUM =>\n\n'
+        for x, y in self.gen_coords():
+            if y > last_y:
+                s += '\n'
+                last_y = y
+            if self[x, y] is None:
+                s += '_'
+            else:
+                s += self[x, y].char()
+        s += '\n'
+        LOG.info(s)
+
+    def mark(self, pos):
+        self[pos] = Marker(pos)
+
+    def has_empty(self):
+        for x, y in self.gen_coords():
+            if self[x, y] is None:
+                return True
+        return False
+
+    def rand_pos_empty(self):
+        if not self.has_empty():
+            return None
+        while True:
+            pos = rand_pos(self)
+            if self[pos] is None:
+                return pos

@@ -77,23 +77,44 @@ class AI:
         closest_enemy = sorted(dists)[0][1]
         return closest_enemy
 
-    def a_star(self, stadium, target_pos):
+    @staticmethod
+    def a_star_least_f(open_cells, goal):
+        dists = []
+        for open_cell in open_cells:
+            dists.append((
+                calc_distance(open_cell, goal),
+                open_cell,
+            ))
+        dists = sorted(dists)
+        return dists[0]
+
+    @staticmethod
+    def a_star_reconstruct_path(paths, goal):
+        path = []
+        current = goal
+        while paths[current] is not None:
+            path.append(paths[current])
+            current = paths[current]
+        # Reverse it, as it was goal to start
+        return path[::-1]
+
+    @staticmethod
+    def a_star(start, stadium, goal):
         paths = {}
         closed_cells = []
-        pos = self.gladiator.pos
-        open_cells = set(stadium.empty_neighbors(pos))
+        open_cells = {start}
         closed_cells = set()
+        last = None
         while True:
             if not open_cells:
+                # Failed. No path.
                 return None
-            dists = []
-            for open_cell in open_cells:
-                dists.append((
-                    calc_distance(open_cell, target_pos),
-                    open_cell,
-                ))
-            dists = sorted(dists)
-            neighbors = set(stadium.empty_neighbors(pos)) - closed_cells
-            if not neighbors:
-                closed_cells.add(pos)
-
+            dist, current = AI.a_star_least_f(open_cells, goal)
+            paths[current] = last
+            if current == goal:
+                break
+            closed_cells.add(current)
+            neighbors = set(stadium.empty_neighbors(current))
+            open_cells = (open_cells | neighbors) - closed_cells
+            last = current
+        return AI.a_star_reconstruct_path(paths, goal)

@@ -31,7 +31,7 @@ def roll(n, sides, top=None):
 def _name_randomizer():
     name_idx = 0
 
-    def random_name():
+    def rand_name():
         global NAMES
         nonlocal name_idx
         name = NAMES[name_idx].title()
@@ -41,7 +41,7 @@ def _name_randomizer():
             name_idx = 0
         return name
 
-    return random_name
+    return rand_name
 
 
 def rand_prob(mn=0, mx=1):
@@ -78,4 +78,12 @@ def attempt_with_bonus(base, bonus=0):
     return prob <= (1.0 - diff)
 
 
-random_name = _name_randomizer()
+def rand_pos(obj):
+    if hasattr(obj, 'size'):
+        w, h = obj.size
+    else:
+        w, h = obj
+    return randint(0, w - 1), randint(0, h - 1)
+
+
+rand_name = _name_randomizer()
