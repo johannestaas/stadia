@@ -53,7 +53,7 @@ class Gladiator:
         self.pos = (None, None)
         self.weapon = Weapon.fist()
         self.armor = Armor.skin()
-        self.ai = AI()
+        self.ai = AI(self)
 
     def show(self, win):
         for i, msg in enumerate([

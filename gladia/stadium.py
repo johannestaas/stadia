@@ -1,4 +1,5 @@
 import logging
+from itertools import product
 
 LOG = logging.getLogger(__name__)
 
@@ -54,3 +55,33 @@ class Stadium:
             for glad in team.gladiators:
                 # Heals HP, and removes pos.
                 glad.cleanup()
+
+    def neighbors(self, pos):
+        '''
+        Given a position, return the position of all neighbor cells.
+        For A* algorithm.
+        '''
+        neighbors = []
+        deltas = list(product([-1, 0, 1], [-1, 0, 1]))
+        # Don't return the same cell.
+        deltas.remove((0, 0))
+        for dx, dy in deltas:
+            posx, posy = pos[0] + dx, pos[1] + dy
+            # Filter out illegal positions.
+            if posx < 0 or posx >= self.size[0]:
+                continue
+            if posy < 0 or posy >= self.size[1]:
+                continue
+            neighbors.append((posx, posy))
+        return neighbors
+
+    def empty_neighbors(self, pos):
+        '''
+        Find all neighboring positions that are open to be moved on.
+        For A* algorithm.
+        '''
+        neighbors = self.neighbors(pos)
+        for n in neighbors[:]:
+            if self[n] is not None:
+                neighbors.remove(n)
+        return neighbors
