@@ -109,13 +109,17 @@ class Stadium:
             neighbors.append((posx, posy))
         return neighbors
 
-    def empty_neighbors(self, pos):
+    def empty_neighbors(self, pos, goal=None):
         '''
         Find all neighboring positions that are open to be moved on.
         For A* algorithm.
+
+        "goal" is so that it returns it as an empty neighbor.
         '''
         neighbors = self.neighbors(pos)
         for n in neighbors[:]:
+            if n == goal:
+                continue
             if self[n] is not None:
                 neighbors.remove(n)
         return neighbors
@@ -188,6 +192,7 @@ class Stadium:
                 LOG.info(f'{glad.name} is not doing anything')
             elif action is Action.move:
                 LOG.info(f'{glad.name} is moving to {target}')
+                self[glad.pos] = None
                 self[target] = glad
             elif action is Action.attack:
                 LOG.info(f'{glad.name} is attacking {target.name}')

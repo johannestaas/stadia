@@ -57,7 +57,7 @@ class AI:
 
     def act(self, stadium, enemy_team):
         if self.behave is Behavior.attack:
-            if self.target is None:
+            if self.target is None or self.target.is_dead():
                 self.target = self.find_target(stadium, enemy_team)
             dist = calc_distance(self.gladiator.pos, self.target.pos)
             if dist > self.gladiator.weapon.range:
@@ -73,7 +73,7 @@ class AI:
                         f'{self.target.name}'
                     )
                     return Action.nop, None
-                return Action.move, path[0]
+                return Action.move, path[1]
             else:
                 # We can attack.
                 return Action.attack, self.target
@@ -83,6 +83,8 @@ class AI:
     def find_target(self, stadium, enemy_team):
         dists = []
         for enemy in enemy_team.gladiators:
+            if enemy.is_dead():
+                continue
             dists.append((
                 calc_distance(self.gladiator.pos, enemy.pos),
                 enemy
@@ -128,7 +130,7 @@ class AI:
             if current == goal:
                 break
             closed_cells.add(current)
-            neighbors = set(stadium.empty_neighbors(current))
+            neighbors = set(stadium.empty_neighbors(current, goal=goal))
             open_cells = (open_cells | neighbors) - closed_cells
             last = current
         return AI.a_star_reconstruct_path(paths, goal)
